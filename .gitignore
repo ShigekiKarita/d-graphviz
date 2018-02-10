@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+d-graphviz.so
+d-graphviz.dylib
+d-graphviz.dll
+d-graphviz.a
+d-graphviz.lib
+d-graphviz-test-*
+*.exe
+*.o
+*.obj
+*.lst
+
+d-graphviz

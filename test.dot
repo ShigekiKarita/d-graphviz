@@ -1,0 +1,9 @@
+digraph g{
+"A
+\"struct\""  [ color = "#ff0000", shape = "box" ];
+"A
+\"struct\"" -> "true" ;
+"A
+\"struct\"" -> "1"  [ style = "dashed", label = "a-to-1" ];
+"true" -> "foo" ;
+}

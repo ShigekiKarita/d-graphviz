@@ -1,0 +1,9 @@
+{
+	"name": "d-graphviz",
+	"authors": [
+		"Shigeki Karita"
+	],
+	"description": "Graphviz utility for D",
+	"copyright": "Copyright © 2018, Shigeki Karita",
+	"license": "BSL-1.0"
+}
