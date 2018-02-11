@@ -3,6 +3,8 @@
 !*.d
 !*.png
 !*.dot
+!.gitignore
+!.travis.yml
 
 .dub
 docs.json

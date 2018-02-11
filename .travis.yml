@@ -1,0 +1,20 @@
+sudo: false
+
+os:
+  - linux
+
+language: d
+
+d:
+  - ldc
+  - dmd
+
+env:
+  - ARCH="x86_64"
+
+script:
+  - dub test --build=unittest-cov
+  - ls *.dot | xargs dot -Tpng -O
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
