@@ -5,6 +5,7 @@
 !*.dot
 !.gitignore
 !.travis.yml
+!LICENSE
 
 .dub
 docs.json
