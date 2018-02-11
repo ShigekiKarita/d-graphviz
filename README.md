@@ -14,7 +14,7 @@ created by
 import std.stdio;
 import std.format;
 
-static import dot;
+import dgraphviz;
 
 struct A {
     auto toString() {
@@ -24,7 +24,7 @@ struct A {
 
 void main()
 {
-    auto g = new dot.Directed;
+    auto g = new Directed;
     A a;
     with (g) {
         node(a, ["shape": "box", "color": "#ff0000"]);
@@ -46,6 +46,7 @@ library dependency graph
 ```d
 import std.path;
 import std.process;
+import dgraphviz;
 
 void main() {
     // set phobos root
