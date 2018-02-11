@@ -12,6 +12,9 @@ d:
 env:
   - ARCH="x86_64"
 
+before_install:
+  - sudo apt-get install graphviz
+
 script:
   - dub test --build=unittest-cov
   - ls *.dot | xargs dot -Tpng -O
