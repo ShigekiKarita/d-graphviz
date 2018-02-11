@@ -2,7 +2,7 @@
 
 Graphviz utility for D
 
-![dot](test.png)
+![dot](simple.dot.png)
 
 created by
 
@@ -28,11 +28,43 @@ void main()
         edge(a, 1, ["style": "dashed", "label": "a-to-1"]);
         edge(true, "foo");
     }
-    g.save("test.dot");
+    g.save("simple.dot");
 }
 ```
 
-and `$ dot test.dot -Tpng > test.png`
+and `$ dot simple.dot -Tpng -O`
+
+
+## practical example
+
+library dependency graph
+
+```d
+import std.path;
+import std.process;
+
+void main() {
+    // set phobos root
+    auto dc = environment.get("DC");
+    assert(dc != "", "use DUB or set $DC enviroment variable");
+    auto which = executeShell("which " ~ dc);
+    assert(which.status == 0);
+    version(DigitalMars) {
+        auto root = which.output.dirName ~ "/../../src/phobos/";
+    }
+    version(LDC) {
+        auto root = which.output.dirName ~ "/../import/";
+    }
+
+    // plot std.range dependency graph
+    auto g = libraryDependency(root, "std/range", true);
+    g.save("range.dot");
+}
+```
+
+result `$ dot range.dot -Tpng -O`
+
+![range](range.dot.png)
 
 ## TODO
 

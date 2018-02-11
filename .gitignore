@@ -1,3 +1,9 @@
+*
+!*/
+!*.d
+!*.png
+!*.dot
+
 .dub
 docs.json
 __dummy.html
