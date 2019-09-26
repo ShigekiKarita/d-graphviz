@@ -136,7 +136,7 @@ class Directed : Graph {
 
 
 ///
-unittest {
+@safe unittest {
     import std.stdio;
     import std.format;
     import dgraphviz;
