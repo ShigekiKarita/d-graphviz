@@ -3,11 +3,12 @@ module dgraphviz;
 import std.format : format;
 
 
-struct Option {
+private struct Option {
+    @safe:
     string[string] option;
     alias option this;
 
-    auto toString() {
+    auto toString() pure {
         if (option.length == 0) return "";
         auto s = " [ ";
         foreach (k, v; option) {
@@ -19,31 +20,33 @@ struct Option {
 }
 
 private struct Edge {
+    @safe:
     string ark;
     Node src, dst;
     Option option;
 
-    auto toString() {
+    auto toString() pure {
         return "\"%s\" %s \"%s\" %s;\n".format(src.label, ark, dst.label, option);
     }
 }
 
 private class Node {
+    @safe:
     string label;
     Option option;
     size_t nIn = 0, nOut = 0;
 
-    this(string label) {
+    this(string label) pure {
         import std.string : replace;
         this.label = label.replace("\"", "\\\"");
     }
 
-    this(string label, Option option) {
+    this(string label, Option option) pure {
         this(label);
         this.option = option;
     }
 
-    auto info() {
+    auto info() pure {
         if (option.length == 0) return "";
         auto s = "\"%s\" %s;\n".format(label, option);
         return s;
@@ -52,21 +55,22 @@ private class Node {
 
 
 abstract class Graph {
+    @safe:
     import std.conv : to;
 
     // TODO use Set
-    Node[string] nodes;
-    Edge[string] edges;
-    Option graphOpt, nodeOpt, edgeOpt;
+    private Node[string] nodes;
+    private Edge[string] edges;
+    private Option graphOpt, nodeOpt, edgeOpt;
 
-    ref auto node(ref Node d) { return d; }
+    ref auto node(ref Node d) pure { return d; }
 
-    ref auto node(T)(T t) {
+    ref auto node(T)(T t) pure {
         string[string] opt;
         return node(t, opt);
     }
 
-    ref auto node(T)(T t, string[string] option) {
+    ref auto node(T)(T t, string[string] option) pure {
         auto key = t.to!string;
         if (key !in this.nodes) {
             this.nodes[key] = new Node(t.to!string, Option(option));
@@ -74,12 +78,12 @@ abstract class Graph {
         return this.nodes[key];
     }
 
-    auto edge(S, D)(S src, D dst,) {
+    auto edge(S, D)(S src, D dst,) pure {
         string[string] opt;
         return edge(src, dst, opt);
     }
 
-    auto edge(S, D)(S src, D dst, string[string] option) {
+    auto edge(S, D)(S src, D dst, string[string] option) pure {
         auto s = node(src);
         auto d = node(dst);
         auto e = Edge(this.ark, s, d, Option(option));
@@ -89,10 +93,10 @@ abstract class Graph {
         return e;
     }
 
-    abstract string typename();
-    abstract string ark();
+    protected abstract string typename() pure;
+    protected abstract string ark() pure;
 
-    override string toString() {
+    override string toString() pure {
         import std.array : array;
         import std.algorithm : uniq, map, sort;
         auto s = this.typename ~ " g{\n";
@@ -120,13 +124,15 @@ abstract class Graph {
 }
 
 class Undirected : Graph {
-    override string typename() { return "graph"; }
-    override string ark() { return "--"; }
+    @safe:
+    protected override string typename() pure { return "graph"; }
+    protected override string ark() pure { return "--"; }
 }
 
 class Directed : Graph {
-    override string typename() { return "digraph"; }
-    override string ark() { return "->"; }
+    @safe:
+    protected override string typename() pure { return "digraph"; }
+    protected override string ark() pure { return "->"; }
 }
 
 
@@ -153,7 +159,7 @@ unittest {
     g.save("simple.dot");
 }
 
-Directed libraryDependency(string root, string prefix="",
+version(unittest) Directed libraryDependency(string root, string prefix="",
                            bool verbose=false, size_t maxDepth=3) {
     import std.file : dirEntries, SpanMode, readText;
     import std.format : formattedRead;
