@@ -55,7 +55,6 @@ private class Node {
 
 
 abstract class Graph {
-    @safe:
     import std.conv : to;
 
     // TODO use Set
@@ -63,14 +62,14 @@ abstract class Graph {
     private Edge[string] edges;
     private Option graphOpt, nodeOpt, edgeOpt;
 
-    ref auto node(ref Node d) pure { return d; }
+    ref auto node(ref Node d) pure @safe { return d; }
 
-    ref auto node(T)(T t) pure {
+    ref auto node(T)(T t) {
         string[string] opt;
         return node(t, opt);
     }
 
-    ref auto node(T)(T t, string[string] option) pure {
+    ref auto node(T)(T t, string[string] option) {
         auto key = t.to!string;
         if (key !in this.nodes) {
             this.nodes[key] = new Node(t.to!string, Option(option));
@@ -78,12 +77,12 @@ abstract class Graph {
         return this.nodes[key];
     }
 
-    auto edge(S, D)(S src, D dst,) pure {
+    auto edge(S, D)(S src, D dst,) {
         string[string] opt;
         return edge(src, dst, opt);
     }
 
-    auto edge(S, D)(S src, D dst, string[string] option) pure {
+    auto edge(S, D)(S src, D dst, string[string] option) {
         auto s = node(src);
         auto d = node(dst);
         auto e = Edge(this.ark, s, d, Option(option));
@@ -93,10 +92,10 @@ abstract class Graph {
         return e;
     }
 
-    protected abstract string typename() pure;
-    protected abstract string ark() pure;
+    protected abstract string typename() pure @safe;
+    protected abstract string ark() pure @safe;
 
-    override string toString() pure {
+    override string toString() pure @safe {
         import std.array : array;
         import std.algorithm : uniq, map, sort;
         auto s = this.typename ~ " g{\n";
@@ -115,7 +114,7 @@ abstract class Graph {
         return s;
     }
 
-    void save(string path) {
+    void save(string path) @safe {
         import std.stdio : File;
         auto f = File(path, "w");
         f.write(this.toString());
@@ -125,19 +124,19 @@ abstract class Graph {
 
 class Undirected : Graph {
     @safe:
-    protected override string typename() pure { return "graph"; }
-    protected override string ark() pure { return "--"; }
+    protected override string typename() pure @safe { return "graph"; }
+    protected override string ark() pure @safe { return "--"; }
 }
 
 class Directed : Graph {
     @safe:
-    protected override string typename() pure { return "digraph"; }
-    protected override string ark() pure { return "->"; }
+    protected override string typename() pure @safe { return "digraph"; }
+    protected override string ark() pure @safe { return "->"; }
 }
 
 
 ///
-unittest {
+@safe unittest {
     import std.stdio;
     import std.format;
     import dgraphviz;
@@ -159,7 +158,7 @@ unittest {
     g.save("simple.dot");
 }
 
-version(unittest) Directed libraryDependency(string root, string prefix="",
+Directed libraryDependency(string root, string prefix="",
                            bool verbose=false, size_t maxDepth=3) {
     import std.file : dirEntries, SpanMode, readText;
     import std.format : formattedRead;
